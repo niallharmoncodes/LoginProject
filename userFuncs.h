@@ -7,10 +7,8 @@ struct user {
     int id;
 };
 
-struct user createUser(const char *name, const char *password, int id);
+struct user updateUsers(const char *name, const char *password, int id);
 
 void freeUser(struct user *u);
-
-//void openUserFile();
 
 #endif

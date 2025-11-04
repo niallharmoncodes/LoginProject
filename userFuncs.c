@@ -3,7 +3,7 @@
 #include <string.h>
 #include "userFuncs.h"
 
-struct user createUser(const char *name, const char *password, int id){
+struct user updateUsers(const char *name, const char *password, int id){
     struct user u;
     u.id = id;
     u.username = malloc(strlen(name) + 1);
@@ -27,13 +27,3 @@ void freeUser(struct user *u) {
     free(u->password);
 }
 
-
-/*void openUserFile(){
-    FILE *file = fopen("users.csv", "r");
-    if (file == NULL) {
-        printf("Could not open file\n");
-        return 1;
-    }
-
-    fclose(file);
-}*/
