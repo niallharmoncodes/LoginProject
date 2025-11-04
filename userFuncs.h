@@ -9,6 +9,4 @@ struct user {
 
 struct user updateUsers(const char *name, const char *password, int id);
 
-void freeUser(struct user *u);
-
 #endif

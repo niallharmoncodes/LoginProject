@@ -3,8 +3,8 @@
 #include <string.h>
 #include "userFuncs.h"
 
-void getUserInfo();
 void addUser(struct user *users, int *userCount);
+void updateMemory(struct user *users, int *userCount);
 int getUserCount();
 
 int main(){
@@ -16,24 +16,7 @@ int main(){
         return 1;
     }
     
-    //open the file and go through csv file and create users for each
-    FILE *file = fopen("users.csv", "r");
-    if (!file) return 1;
-
-    char line[256];
-    int count = 0;
-
-    while (fgets(line, sizeof(line), file)) {
-        line[strcspn(line, "\n")] = 0; // remove newline
-        char *username = strtok(line, ",");
-        char *password = strtok(NULL, ",");
-
-        if (username && password) {
-            users[count++] = updateUsers(username, password, count);
-        }
-    }
-
-    fclose(file);
+    updateMemory(users, &userCount);
 
     int running = 1;
     while (running)
@@ -62,34 +45,14 @@ int main(){
     
 }
 
-void getUserInfo(){
-    char username[100];
-    char password[100];
-
-    printf("Enter username: ");
-    scanf("%99s", username);  // read up to 99 chars, stops at whitespace
-
-    printf("Enter password: ");
-    scanf("%99s", password);
-
-    struct user u = updateUsers(username, password, 1);
-
-    freeUser(&u);
-}
-
 int getUserCount(){
+    char line[256];
+    int userCount = 0;
+
     FILE *file = fopen("users.csv", "r");
     if (!file) {
         printf("Could not open file.\n");
         return 1;
-    }
-
-    char line[256];
-    int userCount = 0;
-
-    // If your CSV has a header row, skip it
-    if (fgets(line, sizeof(line), file)) {
-        // header skipped
     }
 
     // Count remaining lines
@@ -108,6 +71,7 @@ int getUserCount(){
 void addUser(struct user *users, int *userCount) {
     char name[100];
     char pass[100];
+    char line[256];
 
     printf("\nAdd new user:\n");
     printf("Enter your username: ");
@@ -117,12 +81,13 @@ void addUser(struct user *users, int *userCount) {
     scanf("%99s", pass);
 
     FILE *file = fopen("users.csv", "a");
+    fgets(line, sizeof(line), file);
     if (!file) {
         printf("Error opening CSV for writing.\n");
         return; 
     }
 
-    fprintf(file, "%s,%s\n", name, pass);
+    fprintf(file, "\n%s,%s\n", name, pass);
     fclose(file);
 
     // add new user to memory as well
@@ -130,4 +95,23 @@ void addUser(struct user *users, int *userCount) {
     (*userCount)++;
 
     printf("User '%s' added successfully!\n", name);
+}
+
+void updateMemory(struct user *users, int *userCount){
+    //open the file and go through csv file and create users for each
+    FILE *file = fopen("users.csv", "r");
+    if (!file) return;
+
+    char line[256];
+    int count = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        line[strcspn(line, "\n")] = 0; // remove newline
+        char *username = strtok(line, ",");
+        char *password = strtok(NULL, ",");
+
+        if (username && password) {
+            users[count++] = updateUsers(username, password, count);
+        }
+    }
 }

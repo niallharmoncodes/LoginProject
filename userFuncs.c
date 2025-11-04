@@ -20,10 +20,3 @@ struct user updateUsers(const char *name, const char *password, int id){
     strcpy(u.password, password);
     return u;
 }
-
-
-void freeUser(struct user *u) {
-    free(u->username);
-    free(u->password);
-}
-
